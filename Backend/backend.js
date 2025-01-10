@@ -1,18 +1,20 @@
 import express from "express";
 import cors from "cors"; 
+import path from "path";
 
 const app = express();
-const PORT = 3000;
+const PORT = 8000;
 
+const __dirname = path.resolve();
 // Enable CORS for all routes and origins
 app.use(cors());
 
 // Middleware to parse JSON
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.send("Hello World!");
-});
+// app.get("/", (req, res) => {
+//     res.send("Hello World!");
+// });
 
 // Endpoint to handle Langflow API request
 app.post("/run-flow", async (req, res) => {
@@ -58,6 +60,13 @@ app.post("/run-flow", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
+app.use(express.static(path.join(__dirname, "frontend", "dist")));
+
+app.get("*", (_, res) => {
+    res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
+});
+
 
 // Start the server
 app.listen(PORT, () => {
